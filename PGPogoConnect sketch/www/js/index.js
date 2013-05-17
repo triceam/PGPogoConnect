@@ -1,0 +1,788 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+var app = {
+    // Application Constructor
+    initialize: function() {
+
+        //alert();
+        this.bindEvents();
+
+        this.updateBrush( 0,0,0 );
+
+        this.sketcher = new Sketcher("canvas", this.currentBrush);
+
+        this.thicknessSlider = {
+            track: document.getElementById("thickness"),
+            minThumb: document.getElementById("minThickness"),
+            maxThumb: document.getElementById("maxThickness"),
+            minValue:0,
+            maxValue:1,
+            updateValues:function() {
+                var width = (this.track.offsetWidth-this.minThumb.offsetWidth);
+                this.minValue = this.minThumb.lastPosition/width;
+                this.maxValue = this.maxThumb.lastPosition/width;
+
+                app.sketcher.minSize = this.minValue;
+                app.sketcher.maxSize = this.maxValue;
+            },
+            updateUI:function() {
+                var width = (this.track.offsetWidth-this.minThumb.offsetWidth);
+                if ( this.minThumb.lastPosition == undefined ) {
+
+                    if ( this.minThumb.defaultValue != undefined ) {
+                        this.minThumb.lastPosition = this.minThumb.defaultValue * width;
+                    }
+                    else {
+                        this.minThumb.lastPosition = 0;
+                    }
+                }
+                if ( this.maxThumb.lastPosition == undefined ) {
+
+                    if ( this.maxThumb.defaultValue != undefined ) {
+                        this.maxThumb.lastPosition = this.maxThumb.defaultValue * width;
+                    }
+                    else {
+                        this.maxThumb.lastPosition = 0;
+                    }
+                }
+
+                this.minThumb.style.webkitTransform = 'translate3d(' + this.minThumb.lastPosition + 'px, 0, 0)';
+                this.maxThumb.style.webkitTransform = 'translate3d(' + this.maxThumb.lastPosition + 'px, 0, 0)';
+            },
+            setDefaults: function( min, max ) {
+                this.minThumb.defaultValue = min;
+                this.maxThumb.defaultValue = max;
+                this.minValue = min;
+                this.maxValue = max;
+                app.sketcher.minSize = this.minValue;
+                app.sketcher.maxSize = this.maxValue;
+            }
+
+        }
+
+        this.opacitySlider = {
+            track: document.getElementById("opacity"),
+            minThumb: document.getElementById("minOpacity"),
+            maxThumb: document.getElementById("maxOpacity"),
+            minValue:0,
+            maxValue:1,
+            updateValues:function() {
+                var width = (this.track.offsetWidth-this.minThumb.offsetWidth);
+                this.minValue = this.minThumb.lastPosition/width;
+                this.maxValue = this.maxThumb.lastPosition/width;
+
+                app.sketcher.minOpacity = this.minValue;
+                app.sketcher.maxOpacity = this.maxValue;
+            },
+            updateUI:function() {
+                var width = (this.track.offsetWidth-this.minThumb.offsetWidth);
+                if ( this.minThumb.lastPosition == undefined ) {
+
+                    if ( this.minThumb.defaultValue != undefined ) {
+                        this.minThumb.lastPosition = this.minThumb.defaultValue * width;
+                    }
+                    else {
+                        this.minThumb.lastPosition = 0;
+                    }
+                }
+                if ( this.maxThumb.lastPosition == undefined ) {
+
+                    if ( this.maxThumb.defaultValue != undefined ) {
+                        this.maxThumb.lastPosition = this.maxThumb.defaultValue * width;
+                    }
+                    else {
+                        this.maxThumb.lastPosition = 0;
+                    }
+                }
+
+                this.minThumb.style.webkitTransform = 'translate3d(' + this.minThumb.lastPosition + 'px, 0, 0)';
+                this.maxThumb.style.webkitTransform = 'translate3d(' + this.maxThumb.lastPosition + 'px, 0, 0)';
+            },
+            setDefaults: function( min, max ) {
+                this.minThumb.defaultValue = min;
+                this.maxThumb.defaultValue = max;
+                this.minValue = min;
+                this.maxValue = max;
+                app.sketcher.minOpacity = this.minValue;
+                app.sketcher.maxOpacity = this.maxValue;
+            }
+        }
+
+        this.rSlider = {
+            track: document.getElementById("redTrack"),
+            thumb: document.getElementById("redThumb"),
+            minValue:0,
+            maxValue:255,
+            updateValues:function() {
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                this.value = this.thumb.lastPosition/width;
+
+                app.brushR = Math.round(this.value*this.maxValue);
+                app.updateBrushValues();
+            },
+            updateUI:function() {
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                if ( this.thumb.lastPosition == undefined ) {
+
+                    if ( this.thumb.defaultValue != undefined ) {
+                        this.thumb.lastPosition = this.thumb.defaultValue * width;
+                    }
+                    else {
+                        this.thumb.lastPosition = 0;
+                    }
+                }
+                this.thumb.style.webkitTransform = 'translate3d(' + this.thumb.lastPosition + 'px, 0, 0)';
+
+            },
+            setValue: function( value ) {
+                value = Math.min( value, this.maxValue );
+                value = Math.max( value, this.minValue );
+
+                this.thumb.value = value;
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                this.thumb.lastPosition = (value/this.maxValue) * width;
+                this.updateUI();
+            },
+            setDefaults: function( value ) {
+                this.thumb.defaultValue = value;
+            }
+        }
+
+        this.gSlider = {
+            track: document.getElementById("greenTrack"),
+            thumb: document.getElementById("greenThumb"),
+            minValue:0,
+            maxValue:255,
+            updateValues:function() {
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                this.value = this.thumb.lastPosition/width;
+
+                app.brushG = Math.round(this.value*this.maxValue);
+                app.updateBrushValues();
+            },
+            updateUI:function() {
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                if ( this.thumb.lastPosition == undefined ) {
+
+                    if ( this.thumb.defaultValue != undefined ) {
+                        this.thumb.lastPosition = this.thumb.defaultValue * width;
+                    }
+                    else {
+                        this.thumb.lastPosition = 0;
+                    }
+                }
+                this.thumb.style.webkitTransform = 'translate3d(' + this.thumb.lastPosition + 'px, 0, 0)';
+
+            },
+            setValue: function( value ) {
+                value = Math.min( value, this.maxValue );
+                value = Math.max( value, this.minValue );
+
+                this.thumb.value = value;
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                this.thumb.lastPosition = (value/this.maxValue) * width;
+                this.updateUI();
+            },
+            setDefaults: function( value ) {
+                this.thumb.defaultValue = value;
+            }
+        }
+
+        this.bSlider = {
+            track: document.getElementById("blueTrack"),
+            thumb: document.getElementById("blueThumb"),
+            minValue:0,
+            maxValue:255,
+            updateValues:function() {
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                this.value = this.thumb.lastPosition/width;
+
+                app.brushB = Math.round(this.value*this.maxValue);
+                app.updateBrushValues();
+            },
+            updateUI:function() {
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                if ( this.thumb.lastPosition == undefined ) {
+
+                    if ( this.thumb.defaultValue != undefined ) {
+                        this.thumb.lastPosition = this.thumb.defaultValue * width;
+                    }
+                    else {
+                        this.thumb.lastPosition = 0;
+                    }
+                }
+                this.thumb.style.webkitTransform = 'translate3d(' + this.thumb.lastPosition + 'px, 0, 0)';
+
+            },
+            setValue: function( value ) {
+                value = Math.min( value, this.maxValue );
+                value = Math.max( value, this.minValue );
+
+                this.thumb.value = value;
+                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
+                this.thumb.lastPosition = (value/this.maxValue) * width;
+                this.updateUI();
+            },
+            setDefaults: function( value ) {
+                this.thumb.defaultValue = value;
+            }
+        }
+
+        this.thicknessSlider.setDefaults( 0.25, 0.5 );
+        this.opacitySlider.setDefaults( 0.25, 0.75 );
+
+        this.rSlider.setDefaults(0);
+        this.gSlider.setDefaults(0);
+        this.bSlider.setDefaults(0);
+
+
+        this.drawEnabled = true;
+    },
+    // Bind Event Listeners
+    //
+    // Bind any events that are required on startup. Common events are:
+    // 'load', 'deviceready', 'offline', and 'online'.
+    bindEvents: function() {
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+        
+        document.addEventListener( 'touchstart', function onTouchStart( event ) {
+
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        } );
+    },
+
+    updateBrushValues: function() {
+        app.updateBrush( this.brushR, this.brushG, this.brushB );
+    },
+
+    updateBrush: function( r, g, b ) {
+
+        this.brushR = r;
+        this.brushG = g;
+        this.brushB = b;
+
+        console.log("rgba("+r+","+g+","+b+",0.45)")
+        var canvas = document.createElement('canvas');
+        canvas.width  = 50;
+        canvas.height  = 50;
+        var ctx = canvas.getContext("2d");
+
+        var previewCanvas = document.getElementById("preview");
+        var previewCtx = previewCanvas.getContext("2d");
+
+        app.renderBrush( ctx, 0.4, 1 );
+        app.renderBrush( previewCtx, 1, 2 );
+
+        var img = new Image();
+        img.src = canvas.toDataURL();
+        this.currentBrush = img;
+
+        if( app.sketcher ) {
+            console.log("setting brush")
+            this.sketcher.brush = img;
+
+            app.rSlider.setValue(r);
+            app.gSlider.setValue(g);
+            app.bSlider.setValue(b);
+        }
+    },
+
+    renderBrush: function ( context, alpha, scale ) {
+        context.clearRect(0,0,50*scale,50*scale);
+        context.beginPath();
+        switch( this.brushType ) {
+            case "square":
+                context.fillRect( 5*scale,5*scale,40*scale,40*scale );
+                break;
+            case "triangle":
+                context.moveTo( 25*scale,5*scale );
+                context.lineTo( 45*scale,45*scale );
+                context.lineTo( 5*scale,45*scale );
+                context.lineTo( 25*scale,5*scale );
+                break;
+            case "caligraphic":
+                context.moveTo( 35*scale,5*scale );
+                context.lineTo( 45*scale,5*scale );
+                context.lineTo( 15*scale,45*scale );
+                context.lineTo( 5*scale,45*scale );
+                context.lineTo( 35*scale,5*scale );
+                break;
+            default:
+                context.arc(25*scale, 25*scale, 24*scale, 0, 2 * Math.PI, false);
+                break;
+        }
+        context.fillStyle = "rgba("+this.brushR+","+this.brushG+","+this.brushB+"," + alpha +")";
+        context.fill();
+    },
+
+    initSketchEvents:function () {
+
+        var touchSupported = ('ontouchstart' in window);
+
+        this.mouseDownEvent = touchSupported ? "touchstart" : "mousedown";
+        this.mouseMoveEvent = touchSupported ? "touchmove" : "mousemove";
+        this.mouseUpEvent = touchSupported ? "touchend" : "mouseup";
+
+        document.removeEventListener(this.mouseDownEvent, app.onTouchStart);
+        document.removeEventListener(this.mouseMoveEvent, app.onTouchMove);
+
+        document.removeEventListener( pogoConnect.PEN_TOUCH_BEGIN, app.penTouchBegin );
+        document.removeEventListener( pogoConnect.PEN_TOUCH_MOVE, app.penTouchMove );
+        document.removeEventListener( pogoConnect.PEN_TOUCH_END, app.penTouchEnd );
+        document.removeEventListener( pogoConnect.PEN_TIP_UP, app.penTouchEnd );
+
+        if ( window.pogoConnect.pen.connected ) {
+            console.log("setup pen events")
+            document.addEventListener( pogoConnect.PEN_TOUCH_BEGIN, app.penTouchBegin );
+            document.addEventListener( pogoConnect.PEN_TOUCH_MOVE, app.penTouchMove );
+            document.addEventListener( pogoConnect.PEN_TOUCH_END, app.penTouchEnd );
+            document.addEventListener( pogoConnect.PEN_TIP_UP, app.penTouchEnd );
+        }
+        else {
+
+            console.log("setup touch events")
+            document.addEventListener( this.mouseDownEvent, app.onTouchStart );
+            document.addEventListener( this.mouseMoveEvent, app.onTouchMove );
+        }
+
+        this.thicknessSlider.minThumb.removeEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
+        this.thicknessSlider.maxThumb.removeEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
+        this.thicknessSlider.minThumb.addEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
+        this.thicknessSlider.maxThumb.addEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
+
+        this.opacitySlider.minThumb.removeEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
+        this.opacitySlider.maxThumb.removeEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
+        this.opacitySlider.minThumb.addEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
+        this.opacitySlider.maxThumb.addEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
+
+        this.rSlider.thumb.removeEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
+        this.rSlider.thumb.addEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
+
+        this.gSlider.thumb.removeEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
+        this.gSlider.thumb.addEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
+
+        this.bSlider.thumb.removeEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
+        this.bSlider.thumb.addEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
+
+    },
+
+    penTouchBegin: function(event) {
+
+        if ( !app.drawEnabled ) {
+            return false;
+        }
+
+        document.removeEventListener(this.mouseDownEvent, app.onTouchStart);
+        document.removeEventListener(this.mouseMoveEvent, app.onTouchMove);
+        var data = {
+            x: event.detail.x,
+            y: event.detail.y,
+            pressure: event.detail.pressure,
+            id: "pen"
+        }
+        app.sketcher.drawBegin( data );
+    },
+
+    penTouchMove: function(event) {
+
+        if ( !app.drawEnabled ) {
+            return false;
+        }
+
+        var data = {
+            x: event.detail.x,
+            y: event.detail.y,
+            pressure: event.detail.pressure,
+            id: "pen"
+        }
+        app.sketcher.drawMove( data );
+    },
+
+    penTouchEnd: function(event) {
+        app.sketcher.clear( "pen" );
+    },
+
+
+    onTouchStart: function(event) {
+        if ( !app.drawEnabled ) {
+            return false;
+        }
+
+        var targetTouches = event.targetTouches || [event];
+
+        for ( var x=0; x< targetTouches.length; x++ ) {
+            var touch = targetTouches[x];
+            var id = touch.identifier;
+            if (id == undefined) {
+                id = "input";
+            }
+            var data = {
+                x: touch.pageX,
+                y:touch.pageY,
+                pressure: 0.5,
+                id: id
+            }
+
+            app.sketcher.drawBegin( data );
+        }
+
+        event.preventDefault();
+        return false;
+    },
+
+    onTouchMove: function(event) {
+        if ( !app.drawEnabled ) {
+            return false;
+        }
+
+        var changedTouches = event.changedTouches || [event];
+
+        for ( var x=0; x< changedTouches.length; x++ ) {
+            var touch = changedTouches[x];
+            var id = touch.identifier;
+            if (id == undefined) {
+                id = "input";
+            }
+            var data = {
+                x: touch.pageX,
+                y:touch.pageY,
+                pressure: 0.5,
+                id: id
+            }
+
+            app.sketcher.drawMove( data );
+        }
+
+        event.preventDefault();
+        return false;
+    },
+
+    isDoublePenButtonDown: function() {
+
+        var MAX_DOUBLE_TAP_TIME = 700;
+        var now = new Date().getTime();
+
+        if (this.lastPenButtonDown == undefined) {
+            this.lastPenButtonDown = now;
+            return false;
+        }
+        else {
+            var difference = now - this.lastPenButtonDown;
+            this.lastPenButtonDown = now;
+            if (difference < MAX_DOUBLE_TAP_TIME) {
+                this.lastPenButtonDown = 0;
+                return true;
+            }
+            return false;
+        }
+
+    },
+
+    toggleOptionsDisplay: function() {
+
+        if ( app.drawEnabled ) {
+            app.showOptions();
+        }
+        else {
+            app.hideOptions();
+        }
+    },
+
+    showOptions: function() {
+        app.drawEnabled = false;
+
+        var options = document.getElementById("options");
+        options.className = '';
+
+        this.thicknessSlider.updateUI();
+        this.opacitySlider.updateUI();
+    },
+
+    hideOptions: function() {
+        app.drawEnabled = true;
+        var options = document.getElementById("options");
+        options.className = 'hidden';
+    },
+
+    sliderThumbTouchStart: function(event) {
+
+        console.log(event)
+        var thumb = event.target;
+        var track = thumb.parentNode;
+        var slider;
+        var touch = event.targetTouches[0];
+        var startPosition = {
+            x:touch.pageX,
+            y:touch.pageY
+        }
+
+        if( isNaN(thumb.lastPosition) ) {
+            thumb.lastPosition = 0;
+        }
+        thumb.offset = startPosition.x - (track.offsetLeft+thumb.lastPosition);
+
+        if ( track == app.thicknessSlider.track ) {
+            slider = app.thicknessSlider;
+        } else  {
+            slider = app.opacitySlider;
+        }
+
+        var touchMove = function (e) {
+            var touch = e.targetTouches[0];
+            var difference = {
+                x:startPosition.x - touch.pageX,
+                y:startPosition.y - touch.pageY
+            }
+
+            var position = Math.max( 0, (startPosition.x - difference.x)-thumb.offset );
+            position = Math.min( position, track.offsetWidth-thumb.offsetWidth );
+
+            if (thumb == slider.minThumb) {
+                position = Math.min( position, slider.maxThumb.lastPosition-thumb.offsetWidth );
+            } else {
+                position = Math.max( position, slider.minThumb.lastPosition+thumb.offsetWidth );
+            }
+
+
+            thumb.lastPosition = position;
+
+            thumb.style.webkitTransform = 'translate3d(' + position + 'px, 0, 0)';
+
+            startPosition.x = touch.pageX;
+            startPosition.y = touch.pageY;
+        };
+
+        var touchEnd = function (e) {
+            slider.updateValues();
+            window.removeEventListener( app.mouseMoveEvent, touchMove );
+            window.removeEventListener( app.mouseUpEvent, touchEnd );
+        };
+
+        window.addEventListener( app.mouseMoveEvent, touchMove );
+        window.addEventListener( app.mouseUpEvent, touchEnd );
+
+    },
+
+    rgbSliderThumbTouchStart: function(event) {
+
+        console.log(event)
+        var thumb = event.target;
+        var track = thumb.parentNode;
+        var slider;
+        var touch = event.targetTouches[0];
+        var startPosition = {
+            x:touch.pageX,
+            y:touch.pageY
+        }
+
+        if( isNaN(thumb.lastPosition) ) {
+            thumb.lastPosition = 0;
+        }
+        thumb.offset = startPosition.x - (track.offsetLeft+thumb.lastPosition);
+
+        if ( track == app.rSlider.track ) {
+            slider = app.rSlider;
+        } else if ( track == app.gSlider.track ) {
+            slider = app.gSlider;
+        } else  {
+            slider = app.bSlider;
+        }
+
+        var touchMove = function (e) {
+            var touch = e.targetTouches[0];
+            var difference = {
+                x:startPosition.x - touch.pageX,
+                y:startPosition.y - touch.pageY
+            }
+
+            var position = Math.max( 0, (startPosition.x - difference.x)-thumb.offset );
+            position = Math.min( position, track.offsetWidth-thumb.offsetWidth );
+            thumb.lastPosition = position;
+
+            thumb.style.webkitTransform = 'translate3d(' + position + 'px, 0, 0)';
+
+            startPosition.x = touch.pageX;
+            startPosition.y = touch.pageY;
+            slider.updateValues();
+        };
+
+        var touchEnd = function (e) {
+            window.removeEventListener( app.mouseMoveEvent, touchMove );
+            window.removeEventListener( app.mouseUpEvent, touchEnd );
+        };
+
+        window.addEventListener( app.mouseMoveEvent, touchMove );
+        window.addEventListener( app.mouseUpEvent, touchEnd );
+
+    },
+
+
+    // deviceready Event Handler
+    //
+    // The scope of 'this' is the event. In order to call the 'receivedEvent'
+    // function, we must explicity call 'app.receivedEvent(...);'
+    onDeviceReady: function() {
+        app.log('PhoneGap DeviceReady');
+        app.sketcher.resizeContext();
+        app.initSketchEvents();
+
+        //turn this on to output verbose details about pogoconnect pen events
+        //window.pogoConnect.debug = true;
+        var touchSupported = ('ontouchstart' in window);
+
+        this.mouseDownEvent = touchSupported ? "touchstart" : "mousedown";
+        this.mouseUpEvent = touchSupported ? "touchend" : "mouseup";
+        var eraseButton = document.getElementById("erase");
+        eraseButton.addEventListener( this.mouseDownEvent, function() {
+            app.sketcher.erase();
+        })
+
+        var closeButton = document.getElementById("closeOptions");
+        closeButton.addEventListener( this.mouseDownEvent, function() {
+            app.hideOptions();
+        })
+
+        //color buttons
+
+
+        document.getElementById("black").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(0,0,0);
+        })
+
+        document.getElementById("red").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(211,34,32);
+        })
+
+        document.getElementById("orange").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(252,175,59);
+        })
+
+        document.getElementById("yellow").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(254,241,2);
+        })
+
+        document.getElementById("green").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(64,175,73);
+        })
+
+        document.getElementById("blue").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(0,173,241);
+        })
+
+        document.getElementById("purple").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(143,78,242);
+        })
+
+        document.getElementById("white").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(255,255,255);
+        })
+
+        //end color buttons
+
+
+
+        document.getElementById("circle").addEventListener( this.mouseDownEvent, function() {
+            app.brushType = "circle";
+            app.updateBrushValues();
+        })
+
+        document.getElementById("square").addEventListener( this.mouseDownEvent, function() {
+            app.brushType = "square";
+            app.updateBrushValues();
+        })
+
+        document.getElementById("triangle").addEventListener( this.mouseDownEvent, function() {
+            app.brushType = "triangle";
+            app.updateBrushValues();
+        })
+
+        document.getElementById("caligraphic").addEventListener( this.mouseDownEvent, function() {
+            app.brushType = "caligraphic";
+            app.updateBrushValues();
+        })
+
+
+
+
+        document.addEventListener( pogoConnect.PEN_BUTTON_DOWN, function() {
+            var dc = app.isDoublePenButtonDown();
+
+            if (dc) {
+                console.log( "DOUBLE PEN BUTTON!");
+                app.toggleOptionsDisplay();
+            }
+            app.sketcher.toggleEraseMode();
+        } )
+        document.addEventListener( pogoConnect.PEN_BUTTON_UP, function() {
+            app.sketcher.toggleEraseMode();
+        } )
+
+        document.addEventListener( pogoConnect.PEN_CONNECTING, function() {
+            app.log("pen connecting");
+        } )
+        document.addEventListener( pogoConnect.PEN_CONNECT, function() {
+            app.log("pen connected");
+            app.initSketchEvents();
+        } )
+        document.addEventListener( pogoConnect.PEN_TIP_DOWN, function() {
+            //var touch = document.getElementById("touch");
+            //touch.style["display"] = "block";
+            /*var data = {
+                x: event.detail.x,
+                y: event.detail.y,
+                pressure: event.detail.pressure,
+                id: "pen"
+            }  */
+            //app.sketcher.drawBegin( data );
+
+
+            document.addEventListener(this.mouseDownEvent, app.onTouchStart);
+            document.addEventListener(this.mouseMoveEvent, app.onTouchMove);
+
+        } )
+        document.addEventListener( pogoConnect.PEN_TIP_UP, function() {
+           // var touch = document.getElementById("touch");
+           // touch.style["display"] = "none";
+        } )
+        /*document.addEventListener( pogoConnect.PEN_TOUCH_BEGIN, function(event) {
+            app.update( event.detail );
+        } )
+        document.addEventListener( pogoConnect.PEN_TOUCH_MOVE, function(event) {
+            app.update( event.detail );
+        } )
+        document.addEventListener( pogoConnect.PEN_TOUCH_END, function(event) {
+            //nothing for now
+        } )    */
+
+    },
+    log:function(message) {
+        var output = document.getElementById("output");
+        var innerHTML = message + "<br/>";// + output.innerHTML;
+        output.innerHTML = innerHTML;
+    },
+    update:function(touchInfo) {
+        var touch = document.getElementById("touch");
+        touch.innerHTML = touchInfo.pressure;
+        
+        touch.style.left = touchInfo.x +"px";
+        touch.style.top = touchInfo.y +"px";
+    }
+};
