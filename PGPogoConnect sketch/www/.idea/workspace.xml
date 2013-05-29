@@ -4,6 +4,9 @@
     <list default="true" id="5b7cd445-94a5-44cf-8d77-049ef7dcd06c" name="Default" comment="" />
     <ignored path="www.iws" />
     <ignored path=".idea/workspace.xml" />
+    <file path="/index.html" changelist="5b7cd445-94a5-44cf-8d77-049ef7dcd06c" time="1369850879062" ignored="false" />
+    <file path="/PGPogoConnect.js" changelist="5b7cd445-94a5-44cf-8d77-049ef7dcd06c" time="1369853524097" ignored="false" />
+    <file path="/index.js" changelist="5b7cd445-94a5-44cf-8d77-049ef7dcd06c" time="1369853510843" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +21,9 @@
     <disable_hints />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="www" />
+  </component>
   <component name="FileEditorManager">
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
@@ -31,10 +37,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="index.js" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="index.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/index.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="290" column="33" selection-start="11323" selection-end="11323" vertical-scroll-proportion="-3.2692308">
+                <state line="296" column="0" selection-start="11478" selection-end="11478" vertical-scroll-proportion="0.4044234">
                   <folding />
                 </state>
               </provider>
@@ -49,10 +55,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="sketcher.js" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="sketcher.js" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/js/sketcher.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="129" column="48" selection-start="3564" selection-end="3564" vertical-scroll-proportion="0.41379312">
+                <state line="132" column="75" selection-start="3696" selection-end="3696" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -71,19 +77,28 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="PGPogoConnect.js" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="PGPogoConnect.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/js/PGPogoConnect.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="128" column="25" selection-start="3865" selection-end="3865" vertical-scroll-proportion="0.0">
+                <state line="99" column="20" selection-start="3001" selection-end="3001" vertical-scroll-proportion="0.6584198">
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/index.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="35" column="39" selection-start="1462" selection-end="1462" vertical-scroll-proportion="0.29250893">
+                <state line="36" column="39" selection-start="1541" selection-end="1547" vertical-scroll-proportion="-10.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="topcoat-mobile-dark.css" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/css/topcoat-mobile-dark.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="92" column="60" selection-start="1737" selection-end="1737" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -102,19 +117,18 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/js/highDPICanvas.js" />
-        <option value="$PROJECT_DIR$/js/PGPogoConnect.js" />
         <option value="$PROJECT_DIR$/css/index.css" />
-        <option value="$PROJECT_DIR$/index.html" />
-        <option value="$PROJECT_DIR$/js/index.js" />
         <option value="$PROJECT_DIR$/js/sketcher.js" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/js/PGPogoConnect.js" />
+        <option value="$PROJECT_DIR$/js/index.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="715" />
-    <option name="y" value="103" />
-    <option name="width" value="1830" />
-    <option name="height" value="1028" />
+    <option name="y" value="22" />
+    <option name="width" value="2560" />
+    <option name="height" value="1414" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -142,6 +156,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -204,7 +219,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -217,7 +231,15 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="JavascriptDebugSession" factoryName="Local">
+    <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
+      <option name="VMOptions" />
+      <option name="arguments" />
+      <option name="filePath" />
+      <option name="scope" value="ALL" />
+      <option name="testName" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugSession" factoryName="Local" singleton="true">
       <JSDebuggerConfigurationSettings>
         <option name="engineId" value="embedded" />
         <option name="fileUrl" />
@@ -236,13 +258,13 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="715" y="103" width="1830" height="1028" extended-state="6" />
+    <frame x="0" y="22" width="2560" height="1414" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.094078586" sideWeight="0.99226606" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.06700828" sideWeight="0.91190106" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -290,6 +312,13 @@
     <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
     <option name="SHOW_FILE_HISTORY_DETAILS" value="true" />
     <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
+    <option name="SHOW_DIRTY_RECURSIVELY" value="false" />
+    <option name="LIMIT_HISTORY" value="true" />
+    <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
+    <option name="UPDATE_FILTER_SCOPE_NAME" />
+    <option name="USE_COMMIT_MESSAGE_MARGIN" value="false" />
+    <option name="COMMIT_MESSAGE_MARGIN_SIZE" value="72" />
+    <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
     <option name="LAST_COMMIT_MESSAGE" />
@@ -303,6 +332,7 @@
     <option name="ACTIVE_VCS_NAME" />
     <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
     <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
+    <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
   </component>
@@ -310,13 +340,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/js/trigonometry.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="4" selection-start="14" selection-end="14" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/sketcher.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="98" column="51" selection-start="2823" selection-end="2823" vertical-scroll-proportion="0.0">
@@ -385,13 +408,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/PGPogoConnect.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="128" column="25" selection-start="3865" selection-end="3865" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/css/index.css">
       <provider selected="true" editor-type-id="text-editor">
         <state line="194" column="16" selection-start="3546" selection-end="3546" vertical-scroll-proportion="0.0">
@@ -399,23 +415,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="file://$PROJECT_DIR$/css/topcoat-mobile-dark.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="39" selection-start="1462" selection-end="1462" vertical-scroll-proportion="0.29250893">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="290" column="33" selection-start="11323" selection-end="11323" vertical-scroll-proportion="-3.2692308">
+        <state line="92" column="60" selection-start="1737" selection-end="1737" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/sketcher.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="129" column="48" selection-start="3564" selection-end="3564" vertical-scroll-proportion="0.41379312">
+        <state line="132" column="75" selection-start="3696" selection-end="3696" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="39" selection-start="1541" selection-end="1547" vertical-scroll-proportion="-10.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/PGPogoConnect.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="99" column="20" selection-start="3001" selection-end="3001" vertical-scroll-proportion="0.6584198">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="296" column="0" selection-start="11478" selection-end="11478" vertical-scroll-proportion="0.4044234">
           <folding />
         </state>
       </provider>

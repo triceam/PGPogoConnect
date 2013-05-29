@@ -93,6 +93,13 @@ window.pogoConnect = {
         var event = new CustomEvent(type, {"detail":this.pen});
         document.dispatchEvent(event);
     },
+    
+    setPenLEDColor: function(r, g, b){
+        
+        if ( this.pen.connected ) {
+            cordova.exec(function(param) {}, function() {}, "PGPogoConnect", "setPenLEDColor", [r.toString(),g.toString(),b.toString()]);
+        }
+    },
 
     queryPen:function() {
         var self = this;

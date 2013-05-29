@@ -295,6 +295,8 @@ var app = {
         img.src = canvas.toDataURL();
         this.currentBrush = img;
 
+        window.pogoConnect.setPenLEDColor( r,g,b );
+
         if( app.sketcher ) {
             console.log("setting brush")
             this.sketcher.brush = img;

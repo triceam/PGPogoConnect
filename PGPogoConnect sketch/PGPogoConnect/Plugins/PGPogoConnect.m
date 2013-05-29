@@ -10,6 +10,7 @@
 #import <Cordova/CDV.h>
 #import "T1PogoManager.h"
 
+
 @implementation PGPogoConnect
 
 - (void)pluginInitialize {
@@ -80,6 +81,26 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
     }
     
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+
+- (void)setPenLEDColor:(CDVInvokedUrlCommand*)command {
+    
+    NSLog(@"setLEDColor");
+    NSString* red = [command.arguments objectAtIndex:0];
+    NSString* green = [command.arguments objectAtIndex:1];
+    NSString* blue = [command.arguments objectAtIndex:2];
+    
+    CGFloat r = [red floatValue]/255.0f;
+    CGFloat g = [green floatValue]/255.0f;
+    CGFloat b = [blue floatValue]/255.0f;
+    
+    NSLog(@"%f %f %f", r,g,b);
+    UIColor* penColor = [UIColor colorWithRed:r green:g blue:b alpha:1.0];
+    [pogoManager fadeToLEDColor:penColor overTime:0.15f forDuration:2.0f];
+    
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"OK"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -296,7 +317,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
 	
 }
 
-- (void)pogoManager:(T1PogoManager *)manager didDetectTipUp:(T1PogoEvent *)event forPen:(T1PogoPen *)pen; {
+- (void)pogoManager:(T1PogoManager *)manager didDetectTipUp:(T1PogoEvent *)event forPen:(T1PogoPen *)pen {
 		NSLog(@"tip up (app)");
     
     CGPoint location = [event.touch locationInView:self.webView];

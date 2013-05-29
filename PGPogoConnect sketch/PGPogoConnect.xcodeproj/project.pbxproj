@@ -524,6 +524,7 @@
 					"$(ARCHS_STANDARD_32_BIT)",
 				);
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Andrew Trice (3QD6QTSS4P)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -538,6 +539,7 @@
 					"\"$(SRCROOT)/T1PogoManager\"",
 				);
 				PRODUCT_NAME = PGPogoConnect;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s";
 			};
@@ -552,6 +554,7 @@
 					"$(ARCHS_STANDARD_32_BIT)",
 				);
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Andrew Trice (3QD6QTSS4P)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PGPogoConnect/PGPogoConnect-Prefix.pch";
@@ -564,6 +567,7 @@
 					"\"$(SRCROOT)/T1PogoManager\"",
 				);
 				PRODUCT_NAME = PGPogoConnect;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s";
 			};
