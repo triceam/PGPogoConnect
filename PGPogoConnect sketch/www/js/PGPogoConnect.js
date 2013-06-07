@@ -112,9 +112,11 @@ window.pogoConnect = {
  
                 var connected = self.pen.connected;
                 console.log ("connected");
-                     var obj = JSON.parse( param );
-                     console.log (obj.connected);
+
+                var obj = JSON.parse( param );
+                console.log (obj.connected);
                 self.setPenForTouch( obj );
+
                 console.log ("setPenForTouch");
 
                 if ( !connected && obj.connected){

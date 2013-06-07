@@ -24,7 +24,7 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
         <link rel="stylesheet" type="text/css" href="css/topcoat-mobile-dark.css" />
-        <title>Hello World</title>
+        <title>PogoConnect Sketching</title>
     </head>
     <body>
 
@@ -32,11 +32,14 @@
 
         <div id="output"></div>
 
-        <button id="erase">erase</button>
-
         <div id="options" class="hidden" >
 
             <div id="optionsContent">
+
+                <h2>Commands</h2>
+
+                <button id="erase"  class="dark-button dark-cta">erase</button>
+                <button id="save"  class="dark-button dark-cta">save</button>
 
                 <h2>Thickness</h2>
                 <div id="thickness" class="track">
@@ -50,16 +53,16 @@
                     <div id="maxOpacity" class="thumb"></div>
                 </div>
 
-                <h2>Pallette</h2>
-                <button id="black" class="pallette"></button>
-                <button id="red" class="pallette"></button>
-                <button id="orange" class="pallette"></button>
-                <button id="yellow" class="pallette"></button>
-                <button id="green" class="pallette"></button>
-                <button id="blue" class="pallette"></button>
-                <button id="purple" class="pallette"></button>
-                <button id="white" class="pallette"></button>
-
+                <div id="palletteContainer">
+                    <button id="black" class="pallette"></button>
+                    <button id="red" class="pallette"></button>
+                    <button id="orange" class="pallette"></button>
+                    <button id="yellow" class="pallette"></button>
+                    <button id="green" class="pallette"></button>
+                    <button id="blue" class="pallette"></button>
+                    <button id="purple" class="pallette"></button>
+                    <button id="white" class="pallette"></button>
+                </div>
 
                 <h2>Customize</h2>
 
@@ -69,24 +72,15 @@
                             <div id="rgb">
 
                                 <div id="penType">
-                                    <button id="circle">Circle</button>
-                                    <button id="square">Square</button>
-                                    <button id="triangle">Triangle</button>
-                                    <button id="caligraphic">Caligraphic</button>
+                                    <button id="circle" class="dark-button dark-cta">Circle</button>
+                                    <button id="triangle" class="dark-button dark-cta">Triangle</button>
+                                    <button id="caligraphic" class="dark-button dark-cta">Caligraphic</button>
                                 </div>
                                 <br/>
 
-                                <div id="redTrack" class="track">
-                                    <div id="redThumb" class="thumb min">R</div>
-                                </div>
-                                <div id="greenTrack" class="track">
-                                    <div id="greenThumb" class="thumb min">G</div>
-                                </div>
-
-                                <div id="blueTrack" class="track">
-                                    <div id="blueThumb" class="thumb min">B</div>
-                                </div>
-
+                                <input type="range" class="dark-slider" id="inputR" value="0" min="0" max="255" step="1">
+                                <input type="range" class="dark-slider" id="inputG" value="0" min="0" max="255" step="1">
+                                <input type="range" class="dark-slider" id="inputB" value="0" min="0" max="255" step="1">
 
 
                             </div>
@@ -106,7 +100,7 @@
             </div>
 
 
-            <button id="closeOptions">close</button>
+            <button id="closeOptions" class="dark-button" >x</button>
 
 
         </div>
@@ -116,6 +110,7 @@
         <script type="text/javascript" src="js/sketcher.js"></script>
         <script type="text/javascript" src="js/trigonometry.js"></script>
         <script type="text/javascript" src="js/PGPogoConnect.js"></script>
+        <script type="text/javascript" src="js/Canvas2ImagePlugin.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
             app.initialize();

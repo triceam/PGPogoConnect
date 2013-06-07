@@ -4,8 +4,10 @@ function Sketcher( canvasID, brushImage ) {
 	this.brush = brushImage;
 	this.canvasID = canvasID;
 	this.canvas = document.getElementById( canvasID );
+    canvas.background = "#FFF"
 	this.context = canvas.getContext("2d");
 	this.context.strokeStyle = "#000000";
+    this.context.background = "#F00"
 	this.context.lineWidth = 3;
 	this.eraserImage = null;
 
@@ -35,6 +37,7 @@ Sketcher.prototype.resizeContext = function () {
     this.context.height = window.innerHeight*window.devicePixelRatio;
     this.context.scale( 1/window.devicePixelRatio, 1/window.devicePixelRatio );
 
+    this.erase();
     //console.log( window.innerWidth + " " + window.innerHeight)
 }
 
@@ -166,7 +169,38 @@ Sketcher.prototype.getNormalizedSize = function (pressure) {
         
 
 Sketcher.prototype.erase = function () {
+    this.context.globalCompositeOperation = "source-over";
+    this.context.clearRect( 0, 0, this.context.width, this.context.height );
+    this.context.fillStyle = "#FFF";
+    this.context.fillRect( 0, 0, this.context.width, this.context.height );
+}
 
-	this.context.clearRect( 0, 0, this.context.width, this.context.height );
+
+Sketcher.prototype.toImageData = function()
+{
+    //cache height and width
+    var w = this.context.width;
+    var h = this.context.height;
+
+    //store the current globalCompositeOperation
+    var compositeOperation = this.context.globalCompositeOperation;
+
+    //set to draw behind current content
+    this.context.globalCompositeOperation = "destination-over";
+
+    //set background color
+    this.context.fillStyle = "#FFF";
+
+    //draw background / rect on entire canvas  - doing this multiple times to get rid of weird transparency artifacts when exporting to image
+    for (var x=0; x<10; x++) {
+        this.context.fillRect(0,0,w,h);
+    }
+
+    //get the image data from the canvas
+    var imageData = this.canvas.toDataURL("image/png");
+    this.context.globalCompositeOperation = compositeOperation;
+
+    //return the Base64 encoded data url string
+    return imageData;
 }
 

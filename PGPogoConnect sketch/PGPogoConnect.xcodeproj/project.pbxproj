@@ -46,6 +46,7 @@
 		53816696170F6DAB001C7F3C /* PGPogoConnect.m in Sources */ = {isa = PBXBuildFile; fileRef = 53816695170F6DAB001C7F3C /* PGPogoConnect.m */; };
 		53816698170F72B6001C7F3C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53816697170F72B6001C7F3C /* CoreBluetooth.framework */; };
 		5381669E170FAD54001C7F3C /* PGPogoConnectGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5381669D170FAD54001C7F3C /* PGPogoConnectGestureRecognizer.m */; };
+		53AFF11E17592B4F005A902F /* Canvas2ImagePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 53AFF11D17592B4F005A902F /* Canvas2ImagePlugin.m */; };
 		5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
 		F840E1F1165FE0F500CFE078 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = F840E1F0165FE0F500CFE078 /* config.xml */; };
@@ -120,6 +121,8 @@
 		53816697170F72B6001C7F3C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		5381669C170FAD54001C7F3C /* PGPogoConnectGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPogoConnectGestureRecognizer.h; sourceTree = "<group>"; };
 		5381669D170FAD54001C7F3C /* PGPogoConnectGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPogoConnectGestureRecognizer.m; sourceTree = "<group>"; };
+		53AFF11C17592B4F005A902F /* Canvas2ImagePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Canvas2ImagePlugin.h; sourceTree = "<group>"; };
+		53AFF11D17592B4F005A902F /* Canvas2ImagePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Canvas2ImagePlugin.m; sourceTree = "<group>"; };
 		5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* PGPogoConnect-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "PGPogoConnect-Info.plist"; path = "../PGPogoConnect-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x~iphone.png"; sourceTree = "<group>"; };
@@ -270,6 +273,8 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				53AFF11C17592B4F005A902F /* Canvas2ImagePlugin.h */,
+				53AFF11D17592B4F005A902F /* Canvas2ImagePlugin.m */,
 				53816694170F6DAB001C7F3C /* PGPogoConnect.h */,
 				53816695170F6DAB001C7F3C /* PGPogoConnect.m */,
 				5381669C170FAD54001C7F3C /* PGPogoConnectGestureRecognizer.h */,
@@ -466,6 +471,7 @@
 				53816696170F6DAB001C7F3C /* PGPogoConnect.m in Sources */,
 				5381669E170FAD54001C7F3C /* PGPogoConnectGestureRecognizer.m in Sources */,
 				533187C8171496C600E5E77F /* PGPogoConnect.js in Sources */,
+				53AFF11E17592B4F005A902F /* Canvas2ImagePlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -540,7 +546,7 @@
 				);
 				PRODUCT_NAME = PGPogoConnect;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
@@ -554,7 +560,8 @@
 					"$(ARCHS_STANDARD_32_BIT)",
 				);
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Andrew Trice (3QD6QTSS4P)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Andrew Trice (D67FV253XK)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Andrew Trice (D67FV253XK)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PGPogoConnect/PGPogoConnect-Prefix.pch";
@@ -567,8 +574,9 @@
 					"\"$(SRCROOT)/T1PogoManager\"",
 				);
 				PRODUCT_NAME = PGPogoConnect;
-				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "24FECD16-6CCB-4EB5-BA4A-603DFEA30AD4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "24FECD16-6CCB-4EB5-BA4A-603DFEA30AD4";
+				TARGETED_DEVICE_FAMILY = 2;
 				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Release;

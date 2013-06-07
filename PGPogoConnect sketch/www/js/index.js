@@ -124,153 +124,190 @@ var app = {
             }
         }
 
-        this.rSlider = {
-            track: document.getElementById("redTrack"),
-            thumb: document.getElementById("redThumb"),
-            minValue:0,
-            maxValue:255,
-            updateValues:function() {
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                this.value = this.thumb.lastPosition/width;
+        this.rInput = document.getElementById("inputR");
+        this.gInput = document.getElementById("inputG");
+        this.bInput = document.getElementById("inputB");
+        this.updateTimeout = -1;
 
-                app.brushR = Math.round(this.value*this.maxValue);
-                app.updateBrushValues();
-            },
-            updateUI:function() {
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                if ( this.thumb.lastPosition == undefined ) {
+        this.rInput.addEventListener( "change", function() {
 
-                    if ( this.thumb.defaultValue != undefined ) {
-                        this.thumb.lastPosition = this.thumb.defaultValue * width;
-                    }
-                    else {
-                        this.thumb.lastPosition = 0;
-                    }
-                }
-                this.thumb.style.webkitTransform = 'translate3d(' + this.thumb.lastPosition + 'px, 0, 0)';
+            app.brushR = app.rInput.value;
+            app.updateBrushValues();
+        });
 
-            },
-            setValue: function( value ) {
-                value = Math.min( value, this.maxValue );
-                value = Math.max( value, this.minValue );
+        this.gInput.addEventListener( "change", function() {
 
-                this.thumb.value = value;
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                this.thumb.lastPosition = (value/this.maxValue) * width;
-                this.updateUI();
-            },
-            setDefaults: function( value ) {
-                this.thumb.defaultValue = value;
-            }
-        }
+            app.brushG = app.gInput.value;
+            app.updateBrushValues();
+        });
 
-        this.gSlider = {
-            track: document.getElementById("greenTrack"),
-            thumb: document.getElementById("greenThumb"),
-            minValue:0,
-            maxValue:255,
-            updateValues:function() {
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                this.value = this.thumb.lastPosition/width;
+        this.bInput.addEventListener( "change", function() {
 
-                app.brushG = Math.round(this.value*this.maxValue);
-                app.updateBrushValues();
-            },
-            updateUI:function() {
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                if ( this.thumb.lastPosition == undefined ) {
-
-                    if ( this.thumb.defaultValue != undefined ) {
-                        this.thumb.lastPosition = this.thumb.defaultValue * width;
-                    }
-                    else {
-                        this.thumb.lastPosition = 0;
-                    }
-                }
-                this.thumb.style.webkitTransform = 'translate3d(' + this.thumb.lastPosition + 'px, 0, 0)';
-
-            },
-            setValue: function( value ) {
-                value = Math.min( value, this.maxValue );
-                value = Math.max( value, this.minValue );
-
-                this.thumb.value = value;
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                this.thumb.lastPosition = (value/this.maxValue) * width;
-                this.updateUI();
-            },
-            setDefaults: function( value ) {
-                this.thumb.defaultValue = value;
-            }
-        }
-
-        this.bSlider = {
-            track: document.getElementById("blueTrack"),
-            thumb: document.getElementById("blueThumb"),
-            minValue:0,
-            maxValue:255,
-            updateValues:function() {
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                this.value = this.thumb.lastPosition/width;
-
-                app.brushB = Math.round(this.value*this.maxValue);
-                app.updateBrushValues();
-            },
-            updateUI:function() {
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                if ( this.thumb.lastPosition == undefined ) {
-
-                    if ( this.thumb.defaultValue != undefined ) {
-                        this.thumb.lastPosition = this.thumb.defaultValue * width;
-                    }
-                    else {
-                        this.thumb.lastPosition = 0;
-                    }
-                }
-                this.thumb.style.webkitTransform = 'translate3d(' + this.thumb.lastPosition + 'px, 0, 0)';
-
-            },
-            setValue: function( value ) {
-                value = Math.min( value, this.maxValue );
-                value = Math.max( value, this.minValue );
-
-                this.thumb.value = value;
-                var width = (this.track.offsetWidth-this.thumb.offsetWidth);
-                this.thumb.lastPosition = (value/this.maxValue) * width;
-                this.updateUI();
-            },
-            setDefaults: function( value ) {
-                this.thumb.defaultValue = value;
-            }
-        }
+            app.brushB = app.bInput.value;
+            app.updateBrushValues();
+        });
 
         this.thicknessSlider.setDefaults( 0.25, 0.5 );
         this.opacitySlider.setDefaults( 0.25, 0.75 );
 
-        this.rSlider.setDefaults(0);
-        this.gSlider.setDefaults(0);
-        this.bSlider.setDefaults(0);
-
 
         this.drawEnabled = true;
     },
+
+
     // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         
         document.addEventListener( 'touchstart', function onTouchStart( event ) {
 
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
+            //console.log( "touchstart: " + event.target.nodeName )
+            if ( event.target.nodeName != "INPUT") {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            }
         } );
+
+        //turn this on to output verbose details about pogoconnect pen events
+        //window.pogoConnect.debug = true;
+        var touchSupported = ('ontouchstart' in window);
+
+        this.mouseDownEvent = touchSupported ? "touchstart" : "mousedown";
+        this.mouseUpEvent = touchSupported ? "touchend" : "mouseup";
+        var eraseButton = document.getElementById("erase");
+        eraseButton.addEventListener( this.mouseDownEvent, function() {
+            app.sketcher.erase();
+            app.toggleOptionsDisplay();
+            app.log("canvas erased")
+        })
+
+        var closeButton = document.getElementById("closeOptions");
+        closeButton.addEventListener( this.mouseDownEvent, function() {
+            app.hideOptions();
+        })
+
+        var saveButton = document.getElementById("save");
+        saveButton.addEventListener( this.mouseDownEvent, function() {
+            window.plugins.canvas2ImagePlugin.saveImageDataToLibrary(
+                function(msg){
+                    console.log(msg);
+                    app.toggleOptionsDisplay();
+                    app.log("saved image to photo library")
+                },
+                function(err){
+                    console.log(err);
+                },
+                app.sketcher.toImageData()
+            );
+        })
+
+        //color buttons
+
+
+        document.getElementById("black").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(0,0,0);
+        })
+
+        document.getElementById("red").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(211,34,32);
+        })
+
+        document.getElementById("orange").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(252,175,59);
+        })
+
+        document.getElementById("yellow").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(254,241,2);
+        })
+
+        document.getElementById("green").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(64,175,73);
+        })
+
+        document.getElementById("blue").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(0,173,241);
+        })
+
+        document.getElementById("purple").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(143,78,242);
+        })
+
+        document.getElementById("white").addEventListener( this.mouseDownEvent, function() {
+            app.updateBrush(255,255,255);
+        })
+
+
+
+
+        //pen style buttons
+        document.getElementById("circle").addEventListener( this.mouseDownEvent, function() {
+            app.brushType = "circle";
+            app.updateBrushValues();
+        })
+
+        document.getElementById("triangle").addEventListener( this.mouseDownEvent, function() {
+            app.brushType = "triangle";
+            app.updateBrushValues();
+        })
+
+        document.getElementById("caligraphic").addEventListener( this.mouseDownEvent, function() {
+            app.brushType = "caligraphic";
+            app.updateBrushValues();
+        })
+
+
+
+        //pen SDK events
+        document.addEventListener( pogoConnect.PEN_BUTTON_DOWN, function() {
+            var dc = app.isDoublePenButtonDown();
+
+            if (dc) {
+                console.log( "DOUBLE PEN BUTTON!");
+                app.toggleOptionsDisplay();
+            }
+            app.sketcher.toggleEraseMode();
+        } )
+        document.addEventListener( pogoConnect.PEN_BUTTON_UP, function() {
+            app.sketcher.toggleEraseMode();
+        } )
+
+        document.addEventListener( pogoConnect.PEN_CONNECTING, function() {
+            app.log("pen connecting");
+        } )
+        document.addEventListener( pogoConnect.PEN_CONNECT, function() {
+            app.log("pen connected");
+            app.initSketchEvents();
+        } )
+        document.addEventListener( pogoConnect.PEN_TIP_DOWN, function() {
+
+            //app.sketcher.drawBegin( data );
+
+            console.log(pogoConnect.PEN_TIP_DOWN);
+            document.addEventListener(this.mouseDownEvent, app.onTouchStart);
+            document.addEventListener(this.mouseMoveEvent, app.onTouchMove);
+
+        } )
+        document.addEventListener( pogoConnect.PEN_TIP_UP, function() {
+            //nothing for now
+        } )
+        /*document.addEventListener( pogoConnect.PEN_TOUCH_BEGIN, function(event) {
+         app.update( event.detail );
+         } )
+         document.addEventListener( pogoConnect.PEN_TOUCH_MOVE, function(event) {
+         app.update( event.detail );
+         } )
+         document.addEventListener( pogoConnect.PEN_TOUCH_END, function(event) {
+         //nothing for now
+         } )    */
     },
 
     updateBrushValues: function() {
-        app.updateBrush( this.brushR, this.brushG, this.brushB );
+
+        clearTimeout( this.updateTimeout );
+        this.updateTimeout = setTimeout( function() {
+            app.updateBrush( app.brushR, app.brushG, app.brushB );
+        }, 100 );
     },
 
     updateBrush: function( r, g, b ) {
@@ -288,7 +325,7 @@ var app = {
         var previewCanvas = document.getElementById("preview");
         var previewCtx = previewCanvas.getContext("2d");
 
-        app.renderBrush( ctx, 0.4, 1 );
+        app.renderBrush( ctx, 0.45, 1 );
         app.renderBrush( previewCtx, 1, 2 );
 
         var img = new Image();
@@ -301,9 +338,12 @@ var app = {
             console.log("setting brush")
             this.sketcher.brush = img;
 
-            app.rSlider.setValue(r);
-            app.gSlider.setValue(g);
-            app.bSlider.setValue(b);
+            this.rInput.value = r;
+            this.gInput.value = g;
+            this.bInput.value = b;
+            //app.rSlider.setValue(r);
+            //app.gSlider.setValue(g);
+            //app.bSlider.setValue(b);
         }
     },
 
@@ -315,17 +355,17 @@ var app = {
                 context.fillRect( 5*scale,5*scale,40*scale,40*scale );
                 break;
             case "triangle":
-                context.moveTo( 25*scale,5*scale );
-                context.lineTo( 45*scale,45*scale );
-                context.lineTo( 5*scale,45*scale );
-                context.lineTo( 25*scale,5*scale );
+                context.moveTo( 25*scale,0 );
+                context.lineTo( 50*scale,50*scale );
+                context.lineTo( 0,50*scale );
+                context.lineTo( 25*scale,0 );
                 break;
             case "caligraphic":
-                context.moveTo( 35*scale,5*scale );
-                context.lineTo( 45*scale,5*scale );
-                context.lineTo( 15*scale,45*scale );
-                context.lineTo( 5*scale,45*scale );
-                context.lineTo( 35*scale,5*scale );
+                context.moveTo( 35*scale,0 );
+                context.lineTo( 50*scale,5*scale );
+                context.lineTo( 15*scale,50*scale );
+                context.lineTo( 5*scale,50*scale );
+                context.lineTo( 35*scale,0 );
                 break;
             default:
                 context.arc(25*scale, 25*scale, 24*scale, 0, 2 * Math.PI, false);
@@ -337,6 +377,7 @@ var app = {
 
     initSketchEvents:function () {
 
+        console.log("initSketchEvents");
         var touchSupported = ('ontouchstart' in window);
 
         this.mouseDownEvent = touchSupported ? "touchstart" : "mousedown";
@@ -361,8 +402,8 @@ var app = {
         else {
 
             console.log("setup touch events")
-            document.addEventListener( this.mouseDownEvent, app.onTouchStart );
-            document.addEventListener( this.mouseMoveEvent, app.onTouchMove );
+            //document.addEventListener( this.mouseDownEvent, app.onTouchStart );
+            //document.addEventListener( this.mouseMoveEvent, app.onTouchMove );
         }
 
         this.thicknessSlider.minThumb.removeEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
@@ -375,19 +416,12 @@ var app = {
         this.opacitySlider.minThumb.addEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
         this.opacitySlider.maxThumb.addEventListener(this.mouseDownEvent, app.sliderThumbTouchStart);
 
-        this.rSlider.thumb.removeEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
-        this.rSlider.thumb.addEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
-
-        this.gSlider.thumb.removeEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
-        this.gSlider.thumb.addEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
-
-        this.bSlider.thumb.removeEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
-        this.bSlider.thumb.addEventListener(this.mouseDownEvent, app.rgbSliderThumbTouchStart);
 
     },
 
     penTouchBegin: function(event) {
 
+        //console.log("penTouchBegin")
         if ( !app.drawEnabled ) {
             return false;
         }
@@ -405,6 +439,7 @@ var app = {
 
     penTouchMove: function(event) {
 
+        //console.log("penTouchMove")
         if ( !app.drawEnabled ) {
             return false;
         }
@@ -424,6 +459,7 @@ var app = {
 
 
     onTouchStart: function(event) {
+        //console.log("onTouchStart")
         if ( !app.drawEnabled ) {
             return false;
         }
@@ -451,6 +487,7 @@ var app = {
     },
 
     onTouchMove: function(event) {
+        //console.log("onTouchMove")
         if ( !app.drawEnabled ) {
             return false;
         }
@@ -583,58 +620,6 @@ var app = {
 
     },
 
-    rgbSliderThumbTouchStart: function(event) {
-
-        console.log(event)
-        var thumb = event.target;
-        var track = thumb.parentNode;
-        var slider;
-        var touch = event.targetTouches[0];
-        var startPosition = {
-            x:touch.pageX,
-            y:touch.pageY
-        }
-
-        if( isNaN(thumb.lastPosition) ) {
-            thumb.lastPosition = 0;
-        }
-        thumb.offset = startPosition.x - (track.offsetLeft+thumb.lastPosition);
-
-        if ( track == app.rSlider.track ) {
-            slider = app.rSlider;
-        } else if ( track == app.gSlider.track ) {
-            slider = app.gSlider;
-        } else  {
-            slider = app.bSlider;
-        }
-
-        var touchMove = function (e) {
-            var touch = e.targetTouches[0];
-            var difference = {
-                x:startPosition.x - touch.pageX,
-                y:startPosition.y - touch.pageY
-            }
-
-            var position = Math.max( 0, (startPosition.x - difference.x)-thumb.offset );
-            position = Math.min( position, track.offsetWidth-thumb.offsetWidth );
-            thumb.lastPosition = position;
-
-            thumb.style.webkitTransform = 'translate3d(' + position + 'px, 0, 0)';
-
-            startPosition.x = touch.pageX;
-            startPosition.y = touch.pageY;
-            slider.updateValues();
-        };
-
-        var touchEnd = function (e) {
-            window.removeEventListener( app.mouseMoveEvent, touchMove );
-            window.removeEventListener( app.mouseUpEvent, touchEnd );
-        };
-
-        window.addEventListener( app.mouseMoveEvent, touchMove );
-        window.addEventListener( app.mouseUpEvent, touchEnd );
-
-    },
 
 
     // deviceready Event Handler
@@ -646,145 +631,13 @@ var app = {
         app.sketcher.resizeContext();
         app.initSketchEvents();
 
-        //turn this on to output verbose details about pogoconnect pen events
-        //window.pogoConnect.debug = true;
-        var touchSupported = ('ontouchstart' in window);
 
-        this.mouseDownEvent = touchSupported ? "touchstart" : "mousedown";
-        this.mouseUpEvent = touchSupported ? "touchend" : "mouseup";
-        var eraseButton = document.getElementById("erase");
-        eraseButton.addEventListener( this.mouseDownEvent, function() {
-            app.sketcher.erase();
-        })
-
-        var closeButton = document.getElementById("closeOptions");
-        closeButton.addEventListener( this.mouseDownEvent, function() {
-            app.hideOptions();
-        })
-
-        //color buttons
-
-
-        document.getElementById("black").addEventListener( this.mouseDownEvent, function() {
-            app.updateBrush(0,0,0);
-        })
-
-        document.getElementById("red").addEventListener( this.mouseDownEvent, function() {
-            app.updateBrush(211,34,32);
-        })
-
-        document.getElementById("orange").addEventListener( this.mouseDownEvent, function() {
-            app.updateBrush(252,175,59);
-        })
-
-        document.getElementById("yellow").addEventListener( this.mouseDownEvent, function() {
-            app.updateBrush(254,241,2);
-        })
-
-        document.getElementById("green").addEventListener( this.mouseDownEvent, function() {
-            app.updateBrush(64,175,73);
-        })
-
-        document.getElementById("blue").addEventListener( this.mouseDownEvent, function() {
-            app.updateBrush(0,173,241);
-        })
-
-        document.getElementById("purple").addEventListener( this.mouseDownEvent, function() {
-            app.updateBrush(143,78,242);
-        })
-
-        document.getElementById("white").addEventListener( this.mouseDownEvent, function() {
-            app.updateBrush(255,255,255);
-        })
-
-        //end color buttons
-
-
-
-        document.getElementById("circle").addEventListener( this.mouseDownEvent, function() {
-            app.brushType = "circle";
-            app.updateBrushValues();
-        })
-
-        document.getElementById("square").addEventListener( this.mouseDownEvent, function() {
-            app.brushType = "square";
-            app.updateBrushValues();
-        })
-
-        document.getElementById("triangle").addEventListener( this.mouseDownEvent, function() {
-            app.brushType = "triangle";
-            app.updateBrushValues();
-        })
-
-        document.getElementById("caligraphic").addEventListener( this.mouseDownEvent, function() {
-            app.brushType = "caligraphic";
-            app.updateBrushValues();
-        })
-
-
-
-
-        document.addEventListener( pogoConnect.PEN_BUTTON_DOWN, function() {
-            var dc = app.isDoublePenButtonDown();
-
-            if (dc) {
-                console.log( "DOUBLE PEN BUTTON!");
-                app.toggleOptionsDisplay();
-            }
-            app.sketcher.toggleEraseMode();
-        } )
-        document.addEventListener( pogoConnect.PEN_BUTTON_UP, function() {
-            app.sketcher.toggleEraseMode();
-        } )
-
-        document.addEventListener( pogoConnect.PEN_CONNECTING, function() {
-            app.log("pen connecting");
-        } )
-        document.addEventListener( pogoConnect.PEN_CONNECT, function() {
-            app.log("pen connected");
-            app.initSketchEvents();
-        } )
-        document.addEventListener( pogoConnect.PEN_TIP_DOWN, function() {
-            //var touch = document.getElementById("touch");
-            //touch.style["display"] = "block";
-            /*var data = {
-                x: event.detail.x,
-                y: event.detail.y,
-                pressure: event.detail.pressure,
-                id: "pen"
-            }  */
-            //app.sketcher.drawBegin( data );
-
-
-            document.addEventListener(this.mouseDownEvent, app.onTouchStart);
-            document.addEventListener(this.mouseMoveEvent, app.onTouchMove);
-
-        } )
-        document.addEventListener( pogoConnect.PEN_TIP_UP, function() {
-           // var touch = document.getElementById("touch");
-           // touch.style["display"] = "none";
-        } )
-        /*document.addEventListener( pogoConnect.PEN_TOUCH_BEGIN, function(event) {
-            app.update( event.detail );
-        } )
-        document.addEventListener( pogoConnect.PEN_TOUCH_MOVE, function(event) {
-            app.update( event.detail );
-        } )
-        document.addEventListener( pogoConnect.PEN_TOUCH_END, function(event) {
-            //nothing for now
-        } )    */
+        //app.showOptions();
 
     },
     log:function(message) {
         var output = document.getElementById("output");
         var innerHTML = message + "<br/>";// + output.innerHTML;
         output.innerHTML = innerHTML;
-    },
-    update:function(touchInfo) {
-        var touch = document.getElementById("touch");
-        touch.innerHTML = touchInfo.pressure;
-        
-        touch.style.left = touchInfo.x +"px";
-        touch.style.top = touchInfo.y +"px";
     }
 };
