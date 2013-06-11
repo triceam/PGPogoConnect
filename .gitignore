@@ -12,3 +12,5 @@ PGPogoConnect simple/PGPogoConnect.xcodeproj/xcuserdata/triceam.xcuserdatad/xcde
 PGPogoConnect sketch/PGPogoConnect.xcodeproj/project.xcworkspace/xcuserdata/triceam.xcuserdatad/UserInterfaceState.xcuserstate
 
 PGPogoConnect sketch/PGPogoConnect.xcodeproj/xcuserdata/triceam.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
+
+*.ipa
