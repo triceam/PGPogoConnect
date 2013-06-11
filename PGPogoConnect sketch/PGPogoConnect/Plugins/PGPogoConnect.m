@@ -22,9 +22,6 @@
     recognizer.delegate = self;
     [self.webView addGestureRecognizer: recognizer];
     
-    
-    
-    
     pogoManager = [T1PogoManager pogoManagerWithDelegate:self];	// be sure to retain if not using ARC
     [pogoManager retain];
     [pogoManager registerView:self.webView];	// pass a view that is receiving touch events.  In this case it's self.view
@@ -32,8 +29,6 @@
     [pogoManager setEnablePenInputOverNetworkIfIncompatiblePad:YES];	// allow pens to connect to iPad 1 & 2.  Highly recommended!
     
     self.webView.multipleTouchEnabled = YES;
-    
-    
     
     NSLog(@"Pogo SDK build number %d",[pogoManager buildNumber]);
     NSLog(@"PGPogoConnect Initialized");
@@ -120,8 +115,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
             
             NSString* script = [NSString stringWithFormat:@"window.pogoConnect.penTouchBegin({timestamp:%f,hash:%i,x:%f,y:%f,pressure:%f});", touch.timestamp, touch.hash, location.x, location.y,[pogoManager pressureForTouch:touch]];
             [self.webView stringByEvaluatingJavaScriptFromString:script];
-            
-//			[drawingController drawTouchBeganWithPoint:[touch locationInView:drawingController.drawingView] pressure:[pogoManager pressureForTouch:touch] timestamp:touch.timestamp];
 		}
 	}
 }
@@ -139,8 +132,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
             
             NSString* script = [NSString stringWithFormat:@"window.pogoConnect.penTouchMove({timestamp:%f,hash:%i,x:%f,y:%f,pressure:%f});", touch.timestamp, touch.hash, location.x, location.y,[pogoManager pressureForTouch:touch]];
             [self.webView stringByEvaluatingJavaScriptFromString:script];
-             
-            //			[drawingController drawTouchMovedWithPoint:[touch locationInView:drawingController.drawingView] pressure:[pogoManager pressureForTouch:touch] timestamp:touch.timestamp];
 		}
 	}
 }
@@ -156,7 +147,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
             
             NSString* script = [NSString stringWithFormat:@"window.pogoConnect.penTouchEnd({timestamp:%f,hash:%i,force:0});", touch.timestamp, touch.hash];
             [self.webView stringByEvaluatingJavaScriptFromString:script];
-//			[drawingController drawTouchEndedWithTimestamp:[event timestamp]];
 		}
 	}
 }
@@ -210,17 +200,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
     
     NSString* script = [NSString stringWithFormat:@"window.pogoConnect.penConnect();"];
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-    
-   /// pen.peripheral.manufacturerName
-    
-	//[debugLabel setText:pen.peripheral.manufacturerName];
-	//[penConnected setHidden:NO];
-	
-	// this is a great place to choose the desired pressure response, linear, light, or heavy.
-	// it defaults to linear.  This is just here as an example.
-	// consider if T1PogoPenPressureResponseLight is best for artistic apps.
-	//[manager setPressureResponse:T1PogoPenPressureResponseLinear forPen:pen];
 }
 
 - (void)pogoManager:(T1PogoManager *)manager didDisconnectPen:(T1PogoPen *)pen {
@@ -228,16 +207,10 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
     
     NSString* script = [NSString stringWithFormat:@"window.pogoConnect.penDisconnect();"];
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-	//[debugLabel setText:@"Pen has disconnected"];
-	//[penConnected setHidden:YES];
-	//[penTipDown setHidden:YES];
-	//[penButtonDown setHidden:YES];
 }
 
 - (void)pogoManager:(T1PogoManager *)manager didUpdatePen:(T1PogoPen *)pen {
 	NSLog(@"Pen Update: %@",pen.peripheral.manufacturerName);
-	//[debugLabel setText:[NSString stringWithFormat:@"%@ - %@",pen.peripheral.manufacturerName, pen.peripheral.productName]];
 }
 
 - (void)pogoManager:(T1PogoManager *)manager didChangePressureWithoutMoving:(T1PogoEvent *)event forPen:(T1PogoPen *)pen {
@@ -245,9 +218,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
     
     NSString* script = [NSString stringWithFormat:@"window.pogoConnect.pressureChange(%f);", [pen lastPressure]];
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-	//	NSLog(@"pressureVal: %f",[pen lastPressure]);
-	//[drawingController drawTouchChangedPressure:event.pressure timestamp:event.firstTimestamp];
 }
 
 - (void)pogoManager:(T1PogoManager *)manager didChangeTouchType:(T1PogoEvent *)event forPen:(T1PogoPen *)pen {
@@ -263,11 +233,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
         NSString* script = [NSString stringWithFormat:@"window.pogoConnect.penTouchBegin({timestamp:%f,hash:%i,x:%f,y:%f,pressure:%f});", [pen lastMovementTimestamp], [pen hash], location.x, location.y,[pogoManager pressureForTouch:event.touch]];
         [self.webView stringByEvaluatingJavaScriptFromString:script];
         
-        
-        
-        
-		// this drawing command is important because if this is a quick tap, no further messages may be received, so we should draw now.
-		//[drawingController drawTouchMovedWithPoint:[event.touch locationInView:drawingController.drawingView] pressure:[pogoManager pressureForTouch:event.touch] timestamp:event.timestamp];
 	}
 	
 	if (event.touchType == T1TouchTypeFinger && event.previousTouchType == T1TouchTypePen1 )
@@ -289,9 +254,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
     
     NSString* script = [NSString stringWithFormat:@"window.pogoConnect.buttonDown(%d);", event.button];
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-	//[debugLabel setText:[NSString stringWithFormat:@"button %d is down", event.button]];
-	//[penButtonDown setHidden:NO];
 }
 
 - (void)pogoManager:(T1PogoManager *)manager didDetectButtonUp:(T1PogoEvent *)event forPen:(T1PogoPen *)pen {
@@ -299,9 +261,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
     
     NSString* script = [NSString stringWithFormat:@"window.pogoConnect.buttonUp(%d);", event.button];
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-	//[debugLabel setText:[NSString stringWithFormat:@"button %d is up", event.button]];
-	//[penButtonDown setHidden:YES];
 	
 }
 
@@ -311,10 +270,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
     CGPoint location = [event.touch locationInView:self.webView];
     NSString* script = [NSString stringWithFormat:@"window.pogoConnect.tipDown({timestamp:%f,hash:%i,x:%f,y:%f,pressure:%f});", [pen lastMovementTimestamp], [pen hash], location.x, location.y, [pen lastPressure]];
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-	//[debugLabel setText:[NSString stringWithFormat:@"tip is down"]];
-	//[penTipDown setHidden:NO];
-	
 }
 
 - (void)pogoManager:(T1PogoManager *)manager didDetectTipUp:(T1PogoEvent *)event forPen:(T1PogoPen *)pen {
@@ -323,9 +278,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
     CGPoint location = [event.touch locationInView:self.webView];
     NSString* script = [NSString stringWithFormat:@"window.pogoConnect.tipUp({timestamp:%f,hash:%i,x:%f,y:%f,pressure:%f});", [pen lastMovementTimestamp], [pen hash], location.x, location.y,[pen lastPressure]];
     [self.webView stringByEvaluatingJavaScriptFromString:script];
-    
-	//[debugLabel setText:[NSString stringWithFormat:@"tip is up"]];
-	//[penTipDown setHidden:YES];
 	
 }
 
@@ -346,15 +298,11 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer
 - (void)pogoManagerDidSuggestDisablingGesturesForRegisteredViews:(T1PogoManager *)manager
 {
 	NSLog(@"-- DISABLE NAVIGATION GESTURES --");
-	//[self removePinchGesture];
-	//[self removeSwipeGesture];
 }
 
 - (void)pogoManagerDidSuggestEnablingGesturesForRegisteredViews:(T1PogoManager *)manager
 {
 	NSLog(@"-- ENABLE NAVIGATION GESTURES --");
-	//[self addPinchGesture];
-	//[self addSwipeGesture];
 }
 
 @end

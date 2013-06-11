@@ -14,6 +14,7 @@ window.pogoConnect = {
 
     debug:false,
     pen:{
+        identifier: 0,
         connected:false,
         x:NaN,
         y:NaN,
@@ -24,15 +25,15 @@ window.pogoConnect = {
     },
 
     penConnect: function() {
-        this.connected = true;
+        this.pen.connected = true;
         this.dispatchEvent( this.PEN_CONNECT );
     },
     penConnecting: function() {
-        this.connected = false;
+        this.pen.connected = false;
         this.dispatchEvent( this.PEN_CONNECTING );
     },
     penDisconnect: function() {
-        this.connected = true;
+        this.pen.connected = true;
         this.dispatchEvent( this.PEN_DISCONNECT );
     },
 
@@ -60,12 +61,14 @@ window.pogoConnect = {
         this.pen.buttonDown = false;
         this.dispatchEvent( this.PEN_BUTTON_UP );
     },
-    tipDown: function () {
+    tipDown: function (touchInfo) {
         this.pen.tipDown = true;
+        this.setPenForTouch(touchInfo);
         this.dispatchEvent( this.PEN_TIP_DOWN );
     },
-    tipUp: function () {
+    tipUp: function (touchInfo) {
         this.pen.tipDown = true;
+        this.setPenForTouch(touchInfo);
         this.dispatchEvent( this.PEN_TIP_UP );
     },
 
@@ -82,12 +85,58 @@ window.pogoConnect = {
     },
     log:function(type) {
         if (this.debug) {
-            console.log("PGPogoConnect::" + type + " x:" + this.pen.x + " y:" + this.pen.y + ", pressure:" + this.pen.pressure + " buttonDown: " + this.pen.buttonDown + " tipDown:" + this.pen.tipDown + "connected: " + this.connected);
+            console.log("PGPogoConnect::" + type + " x:" + this.pen.x + " y:" + this.pen.y + ", pressure:" + this.pen.pressure + " buttonDown: " + this.pen.buttonDown + " tipDown:" + this.pen.tipDown + " connected: " + this.connected);
         }
     },
     dispatchEvent:function(type){
         this.log(type);
         var event = new CustomEvent(type, {"detail":this.pen});
         document.dispatchEvent(event);
+    },
+    
+    setPenLEDColor: function(r, g, b){
+        
+        if ( this.pen.connected ) {
+            cordova.exec(function(param) {}, function() {}, "PGPogoConnect", "setPenLEDColor", [r.toString(),g.toString(),b.toString()]);
+        }
+    },
+
+    queryPen:function() {
+        var self = this;
+        //make a call to native, ignore callbacks b/c native will write back to js as an event
+        cordova.exec(function(param) {
+
+            try{
+                console.log ("queryPen");
+                console.log( param )
+ 
+                var connected = self.pen.connected;
+                console.log ("connected");
+
+                var obj = JSON.parse( param );
+                console.log (obj.connected);
+                self.setPenForTouch( obj );
+
+                console.log ("setPenForTouch");
+
+                if ( !connected && obj.connected){
+                    self.penConnect();
+                    console.log ("penConnect");
+                }
+            }
+                     catch(e){
+                     console.log(e.message);
+                     console.log(e);
+            }
+
+
+        }, function() {}, "PGPogoConnect", "queryPen", []);
     }
+    
 }
+
+document.addEventListener('deviceready', function() {
+                          setTimeout( function(){
+                                     window.pogoConnect.queryPen();
+                                     }, 500 );
+}, false);
